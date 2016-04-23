@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>command.blog</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0">
+    <script type="text/javascript" src="./index.js"></script>
+</head>
+<body>
+    <h1>command.blog</h1>
+    <p>请查看控制台～</p>
+
+    <script type="text/javascript">
+        command.create({
+            data: function () {
+                return new Promise(function (resolve, reject) {
+                    setTimeout(() => {
+                        resolve([
+                            {
+                                title: '测试标题1',
+                                url: 'https://xuexb.com/html/1.html',
+                                tags: ['1', '2']
+                            },
+                            {
+                                title: '测试标题2',
+                                url: 'https://xuexb.com/html/2.html'
+                            },
+                            {
+                                title: '测试标题3',
+                                url: 'https://xuexb.com/html/3.html'
+                            }
+                        ]);
+                    }, 1000);
+                });
+            },
+            name: '前端小武'
+        });
+    </script>
+</body>
+</html>
