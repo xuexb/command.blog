@@ -99,7 +99,10 @@
     /**
      * 创建控制台
      *
-     * @param  {Object} optioins 配置对象
+     * @description 会覆盖window[key]方法以具备在控制台内直接打命令运行
+     * @param {Object}              optioins            配置对象
+     * @param {Array|Function}      options.data        数据，如果是方法则认为返回Promise
+     * @param {string}              options.name        名称，显示在每条结果的最后
      */
     command.create = (optioins = {}) => {
         // 合并默认参数
@@ -137,7 +140,9 @@
     };
 
     /**
-     * 还原方法
+     * 恢复代码
+     *
+     * @description 将把之前覆盖的window[key]方法还原
      */
     command.noConflict = () => {
         Object.keys(cmd).forEach(key => {
