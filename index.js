@@ -4,7 +4,7 @@
  * @description 灵感来自52cik乱码 http://www.52cik.com/
  */
 
-(function (window) {
+((window) => {
     'use strict';
 
     // 仅支持 chrome
@@ -44,7 +44,7 @@
     /**
      * 帮助命令
      */
-    cmd.help = function help() {
+    cmd.help = () => {
         console.clear();
 
         console.log([
@@ -68,7 +68,7 @@
         // 如果有文章
         if (list.length) {
             console.group('文章列表:');
-            list.forEach(function (post) {
+            list.forEach((post) => {
                 console.log(
                     '%c' + post.title + ' %c-> %c' + post.url,
                     styles.green + styles.bold, styles.red, styles.blue
