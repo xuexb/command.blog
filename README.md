@@ -6,7 +6,7 @@
 
 ```html
 <!-- 引用代码 -->
-<script type="text/javascript" src="https://raw.githubusercontent.com/xuexb/command.blog/master/index.js"></script>
+<script type="text/javascript" src="//raw.githubusercontent.com/xuexb/command.blog/gh-pages/index.js"></script>
 
 <script type="text/javascript">
     // 创建控制台
