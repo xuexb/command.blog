@@ -4,6 +4,8 @@
  * @description 灵感来自52cik乱码 http://www.52cik.com/
  */
 
+/* eslint-disable no-console */
+
 ((window) => {
     'use strict';
 
