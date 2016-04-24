@@ -40,7 +40,11 @@
         red: 'color:#A51A0C;',
 
         head: 'font-size:16px;font-weight:bold;',
-        bold: 'font-weight:bold;'
+        bold: 'font-weight:bold;',
+
+        normal: 'font-weight: normal;',
+
+        mark: 'background-color:#ff0;'
     };
 
     /**
@@ -55,27 +59,38 @@
                 '',
                 '%chelp %c- %c显示帮助信息',
                 '%cposts %c- %c列出所有文章',
-                '%ctags %c- %c列出所有标签'
+                '%ctags %c- %c列出所有标签',
+                '%csearch("关键词") %c- %c搜索符合的文章',
+                '%csearch`关键词` %c- %c搜索符合的文章 (es6字符模板方式)'
             ].join('\n'),
             styles.blue + styles.bold,
+            styles.green + styles.bold, styles.red, styles.blue,
+            styles.green + styles.bold, styles.red, styles.blue,
             styles.green + styles.bold, styles.red, styles.blue,
             styles.green + styles.bold, styles.red, styles.blue,
             styles.green + styles.bold, styles.red, styles.blue
         );
     };
 
+    /**
+     * 标签列表
+     *
+     * @return {Undefined} undefined
+     */
     cmd.tags = () => {
         let list = command.optioins.data;
         let tags = {};
         let tagsCount = 0;
 
         list.forEach(post => {
+            // 如果没有标签
             if (!post.tags || !post.tags.length) {
                 return;
             }
 
-            if (!Array.isArray(post.tags)) {
-                post.tags = [post.tags];
+            // 如果标签是个字符串
+            if ('string' === typeof post.tags) {
+                post.tags = post.tags.indexOf(',') ? post.tags.split(',') : [post.tags];
             }
 
             post.tags.forEach(key => {
@@ -129,6 +144,57 @@
         else {
             console.log('%c当前没有文章～', styles.blue);
         }
+    };
+
+    /**
+     * 搜索
+     *
+     * @param  {string} key 关键词
+     * @return {Undefined} undefined
+     */
+    cmd.search = (key) => {
+        key = Array.isArray(key) ? key[0] : key; // 支持字符模板模式
+
+        if (!key) {
+            return console.log('请输入关键字查询');
+        }
+
+        // 关键词正则
+        let re = new RegExp(key.replace(/[.\\[\]{}()|^$?*+]/g, '\\$&'), 'i');
+        let iCount = 0;
+
+        console.group('搜索关键词 "' + key + '"');
+        command.optioins.data.forEach(function (post) {
+            // 如果标签匹配
+            if (re.test(post.title)) {
+                let title = post.title.split(key);
+                let count = title.length;
+
+                title = title.map(val => '%c' + val).join('%c' + key);
+
+                let log = [
+                    title + ' %c-> ' + post.url
+                ];
+
+                new Array(count + count - 1).join(',').split(',').forEach((val, index) => {
+                    if (index % 2 === 0) {
+                        log.push(styles.green + styles.bold);
+                    }
+                    else {
+                        log.push(styles.mark);
+                    }
+                });
+
+                log.push(styles.normal);
+
+                console.log.apply(console, log);
+
+                iCount++;
+            }
+        });
+        console.groupEnd();
+
+        console.log('%c共找到 %c' + iCount + ' %c篇文章，点击链接即可打开。', styles.blue, styles.red, styles.blue);
     };
 
     // 1. 让控制台里可以直接输入命令
