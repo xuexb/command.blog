@@ -47,16 +47,62 @@
     cmd.help = () => {
         console.clear();
 
-        console.log([
-            '%c控制台操作命令:',
-            '',
-            '%chelp %c- %c显示帮助信息',
-            '%cposts %c- %c列出所有文章',
-            ].join('\n'), 
-            styles.blue + styles.bold, 
-            styles.green + styles.bold, styles.red, styles.blue, 
+        console.log(
+            [
+                '%c控制台操作命令:',
+                '',
+                '%chelp %c- %c显示帮助信息',
+                '%cposts %c- %c列出所有文章',
+                '%ctags %c- %c列出所有标签'
+            ].join('\n'),
+            styles.blue + styles.bold,
+            styles.green + styles.bold, styles.red, styles.blue,
+            styles.green + styles.bold, styles.red, styles.blue,
             styles.green + styles.bold, styles.red, styles.blue
         );
+    };
+
+    cmd.tags = () => {
+        let list = command.optioins.data;
+        let tags = {};
+        let tagsCount = 0;
+
+        list.forEach(post => {
+            if (!post.tags || !post.tags.length) {
+                return;
+            }
+
+            if (!Array.isArray(post.tags)) {
+                post.tags = [post.tags];
+            }
+
+            post.tags.forEach(key => {
+                if (!tags[key]) {
+                    tags[key] = [];
+                }
+
+                tags[key].push(post);
+
+                tagsCount += 1;
+            });
+        });
+
+        if (tagsCount === 0) {
+            return console.log('%c当前没有标签～', styles.blue);
+        }
+
+        console.group('标签列表');
+        Object.keys(tags).forEach(key => {
+            console.groupCollapsed(key + ' - 共 ' + tags[key].length + ' 篇');
+            tags[key].forEach(post => {
+                console.log(
+                    '%c' + post.title + ' %c-> %c' + post.url,
+                    styles.green + styles.bold, styles.red, styles.blue
+                );
+            });
+            console.groupEnd();
+        });
+        console.groupEnd();
     };
 
     /**
