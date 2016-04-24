@@ -1,6 +1,6 @@
 # command.blog
 
-命令行的博客，[查看demo](http://xuexb.github.io/command.blog/)，灵感来自 [@52cik](https://github.com/52cik)
+命令行的博客，[查看demo](http://xuexb.github.io/command.blog/)，灵感来自 [52cik.com](http://www.52cik.com/)
 
 ## 使用
 
