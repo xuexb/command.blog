@@ -1,6 +1,6 @@
 # command.blog
 
-chrome浏览器命令行的博客，[查看demo](http://xuexb.github.io/command.blog/)，灵感来自 [52cik.com](http://www.52cik.com/)
+chrome浏览器命令行的博客，[查看demo](http://xuexb.github.io/command.blog/)，[我博客的真实数据](https://xuexb.com/)，灵感来自 [52cik.com](http://www.52cik.com/)
 
 ## 使用
 
