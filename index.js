@@ -19,20 +19,20 @@
      *
      * @type {Object}
      */
-    var command = window.command = {};
+    let command = window.command = {};
 
     /**
      * 命令集
      *
      * @type {Object}
      */
-    var cmd = command.cmd = {};
+    let cmd = command.cmd = {};
 
     /**
      * 控制台输出样式
      * @type {Object}
      */
-    var styles = {
+    let styles = {
         pad: 'padding:115px;',
 
         blue: 'color:#369;',
@@ -61,9 +61,13 @@
                 '%cposts %c- %c列出所有文章',
                 '%ctags %c- %c列出所有标签',
                 '%csearch("关键词") %c- %c搜索符合的文章',
-                '%csearch`关键词` %c- %c搜索符合的文章 (es6字符模板方式)'
+                '%csearch`关键词` %c- %c搜索符合的文章 (es6字符模板方式)',
+                '%cpage("页码") %c- %c根据页码列出文章',
+                '%cpage`页码` %c- %c根据页码列出文章 (es6字符模板方式)'
             ].join('\n'),
             styles.blue + styles.bold,
+            styles.green + styles.bold, styles.red, styles.blue,
+            styles.green + styles.bold, styles.red, styles.blue,
             styles.green + styles.bold, styles.red, styles.blue,
             styles.green + styles.bold, styles.red, styles.blue,
             styles.green + styles.bold, styles.red, styles.blue,
@@ -78,7 +82,7 @@
      * @return {Undefined} undefined
      */
     cmd.tags = () => {
-        let list = command.optioins.data;
+        let list = command.options.data;
         let tags = {};
         let tagsCount = 0;
 
@@ -123,11 +127,11 @@
     };
 
     /**
-     * 列出文章列表
+     * 根据传入的数据展示文章列表
+     *
+     * @param  {Array} list 文章列表
      */
-    cmd.posts = () => {
-        let list = command.optioins.data;
-
+    let showPosts = (list) => {
         // 如果有文章
         if (list.length) {
             console.group('文章列表:');
@@ -144,6 +148,32 @@
         else {
             console.log('%c当前没有文章～', styles.blue);
         }
+    };
+
+    /**
+     * 展示文章
+     */
+    cmd.posts = () => {
+        let list = command.options.data;
+        showPosts(list);
+    };
+
+    /**
+     * 根据页码展示对应页的文章
+     *
+     * @param  {Number} num 页码
+     */
+    cmd.page = (num) => {
+        let list = command.options.data;
+        let pn = command.options.pn;
+        num = +num;
+        num--;
+        if (!Number.isInteger(num) || num < 0) {
+            return console.log('请输入正确的数字页码');
+        }
+        let start = num * pn;
+        list = Array.isArray(list) ? list.slice(start, start + pn) : null;
+        showPosts(list);
     };
 
     /**
@@ -164,7 +194,7 @@
         let iCount = 0;
 
         console.group('搜索关键词 "' + key + '"');
-        command.optioins.data.forEach(function (post) {
+        command.options.data.forEach(function (post) {
             // 如果标签匹配
             if (re.test(post.title)) {
                 let title = post.title.split(key);
@@ -203,7 +233,7 @@
         let old = cmd[key];
         cmd[key] = (...args) => {
             old(...args);
-            return command.optioins.name;
+            return command.options.name;
         };
         cmd[key].toString = () => {
             return cmd[key]();
@@ -214,30 +244,30 @@
      * 创建控制台
      *
      * @description 会覆盖window[key]方法以具备在控制台内直接打命令运行
-     * @param {Object}              optioins            配置对象
+     * @param {Object}              options            配置对象
      * @param {Array|Function}      options.data        数据，如果是方法则认为返回Promise
      * @param {string}              options.name        名称，显示在每条结果的最后
      */
-    command.create = (optioins = {}) => {
+    command.create = (options = {}) => {
         // 合并默认参数
-        command.optioins = Object.assign({}, command.defaults, optioins);
+        command.options = Object.assign({}, command.defaults, options);
 
         // 如果数据是个方法，则认为是个promise
-        if ('function' === typeof command.optioins.data) {
+        if ('function' === typeof command.options.data) {
             console.log('%c加载数据中...', styles.blue + styles.bold);
 
-            Promise.all([command.optioins.data()]).then((data) => {
-                command.optioins.data = data[0];
+            Promise.all([command.options.data()]).then((data) => {
+                command.options.data = data[0];
                 command._run();
             }, (err) => {
                 throw new Error('加载数据出错');
             });
         }
-        else if (Array.isArray(command.optioins.data)) {
+        else if (Array.isArray(command.options.data)) {
             command._run();
         }
         else {
-            throw new Error('optioins.data 不正确');
+            throw new Error('options.data 不正确');
         }
     };
 
@@ -271,6 +301,7 @@
      */
     command.defaults = {
         name: 'command.blog',
-        data: []
+        data: [],
+        pn: 5
     };
 })(window);
